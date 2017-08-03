@@ -1,0 +1,13 @@
+[mysql]
+datadir=/var/lib/mysql
+socker=/var/lib/mysql/mysql.sock
+user=mysql
+# disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+port= {{ mysql_port }}
+
+[mysqld_safe]
+log-error=/var/log/mysql.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+

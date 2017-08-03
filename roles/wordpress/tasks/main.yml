@@ -1,0 +1,27 @@
+---
+- name: dowload wordpress 
+  get_url: url=http://wordpress.org/url=http://wordpress.org/wordpress-{{ wp_version }}.tar.gz dest=/srv/wordpress-{{ wp_version }}.tar.gz
+  sha256sum="{{ wp_sha256sum }}
+
+- name: extract archive
+  command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
+
+- name: add group "wordpress"
+  group: name=wordpress group=wordpress home=/srv/wordpress/
+
+- name: fetch random salts for wordpress config 
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+  become: no
+  become_method: sudo 
+
+- name: create wordpress database
+  mysql_db: name={{ wp_db_user }} password={{ wp_db_password}} priv={{ wp_db_name }}.*ALL host='localhost' state=present
+
+- name: copy wordpress config file
+  file: path=/srv/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes setype=httpd_sys_content_t
+
+- name: start php-fpm service
+  service: name=php-fpm state=started enabled=yes
+
+  

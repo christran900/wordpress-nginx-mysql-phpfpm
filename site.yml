@@ -1,0 +1,12 @@
+---
+- name: install wordpress, mysql, nginx, and php-fpm
+  host: all
+  remote_user: root
+
+  roles:
+    - common
+    - mysql
+    - nginx
+    - php-fpm
+    - wordpress
+
